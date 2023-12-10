@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static com.cgvsu.math.CalculationNormals.calculateNormals;
+
 public class ObjReader {
 
 	private static final String OBJ_VERTEX_TOKEN = "v";
@@ -41,7 +43,7 @@ public class ObjReader {
 			}
 		}
 
-		result.calculateNormals();
+		calculateNormals(result);
 
 		return result;
 	}

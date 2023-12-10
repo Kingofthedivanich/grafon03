@@ -1,6 +1,5 @@
 package com.cgvsu.math;
 
-// Это заготовка для собственной библиотеки для работы с линейной алгеброй
 public class Vector3f {
     public Vector3f(float x, float y, float z) {
         this.x = x;
@@ -8,34 +7,44 @@ public class Vector3f {
         this.z = z;
     }
 
+    public Vector3f() { }
+
     public boolean equals(Vector3f other) {
-        // todo: желательно, чтобы это была глобальная константа
         final float eps = 1e-7f;
         return Math.abs(x - other.x) < eps && Math.abs(y - other.y) < eps && Math.abs(z - other.z) < eps;
     }
 
-    public Vector3f subtract(Vector3f other) {
-        return new Vector3f(this.x - other.x, this.y - other.y, this.z - other.z);
+    public static Vector3f fromTwoPoints(Vector3f vertex1, Vector3f vertex2) {
+        return new Vector3f(vertex2.x - vertex1.x,
+                vertex2.y - vertex1.y,
+                vertex2.z - vertex1.z);
     }
 
-    public Vector3f cross(Vector3f other) {
-        float newX = this.y * other.z - this.z * other.y;
-        float newY = this.z * other.x - this.x * other.z;
-        float newZ = this.x * other.y - this.y * other.x;
-
-        return new Vector3f(newX, newY, newZ);
-    }
-
-    public Vector3f normalize() {
-        float length = (float) Math.sqrt(x * x + y * y + z * z);
-
-        if (length != 0) {
-            float invLength = 1.0f / length;
-            return new Vector3f(x * invLength, y * invLength, z * invLength);
-        } else {
-            // Возвращаем нулевой вектор, если длина равна 0 (избегаем деления на 0)
-            return new Vector3f(0, 0, 0);
+    public void cross(Vector3f v1, Vector3f v2) {
+        if (v1 == null || v2 == null) {
+            throw new IllegalArgumentException("Vector3f can not be null");
         }
+
+        float x = v1.y * v2.z - v1.z * v2.y;
+        float y = v2.x * v1.z - v2.z * v1.x;
+
+        this.z = v1.x * v2.y - v1.y * v2.x;
+        this.x = x;
+        this.y = y;
+    }
+
+    public Vector3f add(Vector3f v) {
+        this.x += v.x;
+        this.y += v.y;
+        this.z += v.z;
+        return this;
+    }
+
+    public Vector3f div(float scalar) {
+        this.x /= scalar;
+        this.y /= scalar;
+        this.z /= scalar;
+        return this;
     }
 
     public float getX() {
