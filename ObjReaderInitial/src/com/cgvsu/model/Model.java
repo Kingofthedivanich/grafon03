@@ -14,4 +14,9 @@ public class Model {
     public  ArrayList<Polygon> getPolygons(){
         return polygons;
     }
+
+    public void addPolygon(Polygon polygon) {
+        this.polygons.add(polygon);
+    }
+
 }

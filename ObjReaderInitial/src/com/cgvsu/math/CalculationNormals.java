@@ -30,7 +30,7 @@ public class CalculationNormals {
         }
     }
 
-    private static Vector3f calculateNormalForVertex(ArrayList<Vector3f> polygonNormals) {
+    public static Vector3f calculateNormalForVertex(ArrayList<Vector3f> polygonNormals) {
         Vector3f vertexNormal = new Vector3f();
         for (Vector3f v : polygonNormals) {
             vertexNormal.add(v);
@@ -38,7 +38,7 @@ public class CalculationNormals {
         return vertexNormal.div(polygonNormals.size());
     }
 
-    private static Vector3f calculateNormalForPolygon(Model model, Polygon polygon) {
+    public static Vector3f calculateNormalForPolygon(Model model, Polygon polygon) {
         ArrayList<Integer> vertexIndices = polygon.getVertexIndices();
 
         Vector3f vector1 = fromTwoPoints(model.vertices.get(vertexIndices.get(0)), model.vertices.get(vertexIndices.get(1)));

@@ -1,5 +1,7 @@
 package com.cgvsu.math;
 
+import java.util.Objects;
+
 public class Vector3f {
     public Vector3f(float x, float y, float z) {
         this.x = x;
@@ -45,6 +47,39 @@ public class Vector3f {
         this.y /= scalar;
         this.z /= scalar;
         return this;
+    }
+
+    public float magnitude() {
+        return (float) Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public Vector3f round(int decimalPlaces) {
+        float factor = (float) Math.pow(10, decimalPlaces);
+        float newX = Math.round(x * factor) / factor;
+        float newY = Math.round(y * factor) / factor;
+        float newZ = Math.round(z * factor) / factor;
+        return new Vector3f(newX, newY, newZ);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Vector3f other = (Vector3f) obj;
+
+        final float eps = 1e-7f;
+        return Math.abs(x - other.x) < eps && Math.abs(y - other.y) < eps && Math.abs(z - other.z) < eps;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%f, %f, %f)", x, y, z);
     }
 
     public float getX() {
