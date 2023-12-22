@@ -4,73 +4,92 @@ import com.cgvsu.math.CalculationNormals;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Polygon;
 import com.cgvsu.math.Vector3f;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
-
-import static org.junit.Assert.assertEquals;
+import java.util.Arrays;
 
 public class CalculationNormalsTest {
 
-    private Model model;
+    @Test
+    public void calculateNormals() {
+        Model model = new Model();
 
-    @Before
-    public void setUp() {
-        // Создаем модель и добавляем несколько полигонов и вершин
-        model = new Model();
         model.vertices.add(new Vector3f(0, 0, 0));
         model.vertices.add(new Vector3f(1, 0, 0));
+        model.vertices.add(new Vector3f(1, 1, 0));
         model.vertices.add(new Vector3f(0, 1, 0));
+        model.vertices.add(new Vector3f(0, 0, 1));
+        model.vertices.add(new Vector3f(1, 0, 1));
+
+        ArrayList<Integer> vertexIndices1 = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
+        ArrayList<Integer> vertexIndices2 = new ArrayList<>(Arrays.asList(0, 1, 4, 5));
+        ArrayList<Integer> vertexIndices3 = new ArrayList<>(Arrays.asList(2, 3, 4, 5));
+        ArrayList<Integer> vertexIndices4 = new ArrayList<>(Arrays.asList(1, 2, 5));
+        ArrayList<Integer> vertexIndices5 = new ArrayList<>(Arrays.asList(0, 3, 4));
 
         Polygon polygon1 = new Polygon();
-        polygon1.addVertexIndex(0);
-        polygon1.addVertexIndex(1);
-        polygon1.addVertexIndex(2);
-        model.addPolygon(polygon1);
-    }
+        polygon1.setVertexIndices(vertexIndices1);
+        Polygon polygon2 = new Polygon();
+        polygon2.setVertexIndices(vertexIndices2);
+        Polygon polygon3 = new Polygon();
+        polygon3.setVertexIndices(vertexIndices3);
+        Polygon polygon4 = new Polygon();
+        polygon4.setVertexIndices(vertexIndices4);
+        Polygon polygon5 = new Polygon();
+        polygon5.setVertexIndices(vertexIndices5);
 
-    @Test
-    public void testCalculateNormals() {
+        model.polygons.add(polygon1);
+        model.polygons.add(polygon2);
+        model.polygons.add(polygon3);
+        model.polygons.add(polygon4);
+        model.polygons.add(polygon5);
+
         CalculationNormals.calculateNormals(model);
 
-        // Проверяем, что количество нормалей совпадает с количеством вершин модели
-        assertEquals(model.vertices.size(), model.normals.size());
+        Vector3f expectedResult1 = new Vector3f(1 / 3f, -1 / 3f, 1 / 3f);
+        Vector3f expectedResult2 = new Vector3f(1 / 3f, -1 / 3f, 1 / 3f);
+        Vector3f expectedResult3 = new Vector3f(1 / 3f, 1 / 3f, 2 / 3f);
+        Vector3f expectedResult4 = new Vector3f(1 / 3f, 1 / 3f, 2 / 3f);
+        Vector3f expectedResult5 = new Vector3f(1 / 3f, 0, 1 / 3f);
+        Vector3f expectedResult6 = new Vector3f(1 / 3f, 0, 1 / 3f);
 
-        // Проверяем, что нормали вычислены правильно (например, что они не нулевые)
-        for (Vector3f normal : model.normals) {
-            assertEquals(1.0, normal.magnitude(), 0.0001); // Проверяем, что длина нормали равна 1 с некоторой погрешностью
+        ArrayList<Vector3f> expectedResult = new ArrayList<>(
+                Arrays.asList(
+                        expectedResult1,
+                        expectedResult2,
+                        expectedResult3,
+                        expectedResult4,
+                        expectedResult5,
+                        expectedResult6
+                )
+        );
+        for (int i = 0; i < model.normals.size(); i++) {
+            Assertions.assertEquals(expectedResult.get(i), model.normals.get(i));
         }
     }
 
     @Test
-    public void testCalculateNormalForVertex() {
-        ArrayList<Vector3f> normals = new ArrayList<>();
-        normals.add(new Vector3f(1, 0, 0));
-        normals.add(new Vector3f(0, 1, 0));
+    public void calculateNormalForPolygon() {
+        Model model = new Model();
 
-        // Вычисляем нормаль для вершины
-        Vector3f result = CalculationNormals.calculateNormalForVertex(normals);
+        model.vertices.add(new Vector3f(0, 0, 0));
+        model.vertices.add(new Vector3f(38, 2, 3.5f));
+        model.vertices.add(new Vector3f(24, 10.3f, 5.6f));
+        model.vertices.add(new Vector3f(6.3f, 2.1f, 15.2f));
+        ArrayList<Integer> vertexIndices = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
 
-        // Печатаем результат для отладки
-        System.out.println("Result: " + result.toString());
-
-        // Проверяем, что результат верный
-        assertEquals(new Vector3f(0.5f, 0.5f, 0), result);
-    }
-
-    @Test
-    public void testCalculateNormalForPolygon() {
-        // Создаем полигон с индексами вершин
         Polygon polygon = new Polygon();
-        polygon.addVertexIndex(0);
-        polygon.addVertexIndex(1);
-        polygon.addVertexIndex(2);
+        polygon.setVertexIndices(vertexIndices);
 
-        // Вычисляем нормаль для полигона
+        model.polygons.add(polygon);
+
+        polygon = model.polygons.get(0);
+
         Vector3f result = CalculationNormals.calculateNormalForPolygon(model, polygon);
+        Vector3f expectedResult = new Vector3f(23.05f, -555.55f, 67.2f);
 
-        // Проверяем, что результат верный
-        assertEquals(new Vector3f(0, 0, 1), result);
+        Assertions.assertEquals(expectedResult, result);
     }
 }
